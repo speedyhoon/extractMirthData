@@ -1,0 +1,2 @@
+Name,Description,Source Data Type,Source Protocol : Address,Destination Data Type,Destination Protocol : Address
+Dev Testing,Transfer HL7 messages to development OE & email notification,HL7 v2.6,LLP: 127.0.0.1:2231/,HL7 v2.6; XML,FTP: /var/hl7spool/dtv_oe/; SMTP: smtp.hc.int:25
