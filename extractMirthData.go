@@ -44,6 +44,8 @@ type Property struct {
 	Value string `xml:",innerxml"`
 }
 
+const lineSeparator, delimiter, multipleValues = "\r\n", ",", "; "
+
 func main() {
 	//Command line flags.
 	xmlDir := flag.String("xmlDir", ".", "Directory to parse exported XML Mirth channel files.")
@@ -52,7 +54,14 @@ func main() {
 	log.SetPrefix("ERROR: ")
 	log.SetFlags(log.Lshortfile)
 
-	var output []byte
+	output := []byte(strings.Join([]string{
+		"Name",
+		"Description",
+		"Source Data Type",
+		"Source Protocol : Address",
+		"Destination Data Type",
+		"Destination Protocol : Address" + lineSeparator,
+	}, delimiter))
 
 	//Process each file in specified xmlDir directory.
 	err := filepath.Walk(*xmlDir, func(path string, details os.FileInfo, err error) error {
@@ -69,8 +78,6 @@ func main() {
 }
 
 func processXMLFile(path string) []byte {
-	const lineSeparator, delimiter, multipleValues = "\r\n", ",", "; "
-
 	src, err := ioutil.ReadFile(path)
 	if err != nil {
 		log.Fatalln(err, path)
