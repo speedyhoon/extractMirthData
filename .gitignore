@@ -1,5 +1,5 @@
-# Object file
-*.o
-
-# Ada Library Information
-*.ali
+.idea/
+*.syso
+*.exe
+*.exe~
+desktop.ini
