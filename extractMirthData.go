@@ -32,6 +32,7 @@ type Connect struct {
 	ProtocolOut string     `xml:"transformer>outboundProtocol"`
 }
 
+//Disabled returns the string "Disabled" if Channel.Enabled == false
 func (c Channel) Disabled() string {
 	if !c.Enabled {
 		return "Disabled"
@@ -39,6 +40,7 @@ func (c Channel) Disabled() string {
 	return ""
 }
 
+//Property represents each properties of a Connect
 type Property struct {
 	Name  string `xml:"name,attr"`
 	Value string `xml:",innerxml"`
@@ -117,35 +119,36 @@ func processXMLFile(path string) []byte {
 //Mirth uses the same XML data structure <property name="DataType">Value</property> for all connection types; otherwise this function wouldn't be required.
 func printSource(p []Property, path string) string {
 	for _, ty := range p {
-		if ty.Name == "DataType" {
-			switch ty.Value {
-			case "File Reader":
-				return fileReader(p)
-			case "File Writer":
-				return fileWriter(p)
-			case "Channel Reader", "Channel Writer":
-				return ty.Value
-			case "Database Writer":
-				return dbWriter(p)
-			case "JavaScript Reader", "JavaScript Writer":
-				return jsWriter(p)
-			case "LLP Listener", "LLP Sender":
-				return llpListener(p)
-			case "SMTP Sender":
-				return smtpSender(p)
-			case "HTTP Sender":
-				return httpSender(p)
-			case "Email Sender":
-				return emailSender(p)
-			case "HTTP Listener":
-				return httpListener(p)
-			case "Web Service Sender":
-				return webService(p)
-			case "Document Writer":
-				return docWriter(p)
-			default:
-				log.Fatalf("%v not defined: %v", ty.Value, path)
-			}
+		if ty.Name != "DataType" {
+			continue
+		}
+		switch ty.Value {
+		case "File Reader":
+			return fileReader(p)
+		case "File Writer":
+			return fileWriter(p)
+		case "Channel Reader", "Channel Writer":
+			return ty.Value
+		case "Database Writer":
+			return dbWriter(p)
+		case "JavaScript Reader", "JavaScript Writer":
+			return jsWriter(p)
+		case "LLP Listener", "LLP Sender":
+			return llpListener(p)
+		case "SMTP Sender":
+			return smtpSender(p)
+		case "HTTP Sender":
+			return httpSender(p)
+		case "Email Sender":
+			return emailSender(p)
+		case "HTTP Listener":
+			return httpListener(p)
+		case "Web Service Sender":
+			return webService(p)
+		case "Document Writer":
+			return docWriter(p)
+		default:
+			log.Fatalf("%v not defined: %v", ty.Value, path)
 		}
 	}
 	return ""
