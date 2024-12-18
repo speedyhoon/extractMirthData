@@ -4,14 +4,13 @@ import (
 	"encoding/xml"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 )
 
-//Channel represents a Mirth channel
+// Channel represents a Mirth channel
 type Channel struct {
 	XMLName     xml.Name  `xml:"channel"`
 	Src         Connect   `xml:"sourceConnector"`
@@ -24,7 +23,7 @@ type Channel struct {
 	//Revision         string    `xml:"revision"`
 }
 
-//Connect is used by <sourceConnector> and <destinationConnectors>
+// Connect is used by <sourceConnector> and <destinationConnectors>
 type Connect struct {
 	Name        string     `xml:"name"`
 	Props       []Property `xml:"properties>property"`
@@ -32,7 +31,7 @@ type Connect struct {
 	ProtocolOut string     `xml:"transformer>outboundProtocol"`
 }
 
-//Disabled returns the string "Disabled" if Channel.Enabled == false
+// Disabled returns the string "Disabled" if Channel.Enabled == false
 func (c Channel) Disabled() string {
 	if !c.Enabled {
 		return "Disabled"
@@ -40,7 +39,7 @@ func (c Channel) Disabled() string {
 	return ""
 }
 
-//Property represents each properties of a Connect
+// Property represents each properties of a Connect
 type Property struct {
 	Name  string `xml:"name,attr"`
 	Value string `xml:",innerxml"`
@@ -80,7 +79,7 @@ func main() {
 }
 
 func processXMLFile(path string) []byte {
-	src, err := ioutil.ReadFile(path)
+	src, err := os.ReadFile(path)
 	if err != nil {
 		log.Fatalln(err, path)
 	}
@@ -115,8 +114,8 @@ func processXMLFile(path string) []byte {
 	return []byte(strings.Join(list, delimiter) + lineSeparator)
 }
 
-//printSource determines which function to call based on the property's DataType value.
-//Mirth uses the same XML data structure <property name="DataType">Value</property> for all connection types; otherwise this function wouldn't be required.
+// printSource determines which function to call based on the property's DataType value.
+// Mirth uses the same XML data structure <property name="DataType">Value</property> for all connection types; otherwise this function wouldn't be required.
 func printSource(p []Property, path string) string {
 	for _, ty := range p {
 		if ty.Name != "DataType" {
